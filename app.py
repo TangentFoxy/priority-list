@@ -4,7 +4,7 @@ import sqlite3
 app = Flask(__name__)
 DB = "db/tasks.db"
 
-def init_db():
+def initialize_database():
     with sqlite3.connect(DB) as conn:
         conn.execute("""
             CREATE TABLE IF NOT EXISTS tasks (
@@ -60,11 +60,11 @@ HTML = """
         <button style="color:red;">×</button>
     </form>
 
-    <form style="display:inline;" method="post" action="/inc/{{task.id}}">
+    <form style="display:inline;" method="post" action="/increment/{{task.id}}">
         <button>+</button>
     </form>
 
-    <form style="display:inline;" method="post" action="/dec/{{task.id}}">
+    <form style="display:inline;" method="post" action="/decrement/{{task.id}}">
         <button>-</button>
     </form>
 
@@ -83,13 +83,13 @@ def add():
     add_task(request.form["name"])
     return redirect(url_for("index"))
 
-@app.route("/inc/<int:task_id>", methods=["POST"])
-def inc(task_id):
+@app.route("/increment/<int:task_id>", methods=["POST"])
+def increment(task_id):
     update_score(task_id, 1)
     return redirect(url_for("index"))
 
-@app.route("/dec/<int:task_id>", methods=["POST"])
-def dec(task_id):
+@app.route("/decrement/<int:task_id>", methods=["POST"])
+def decrement(task_id):
     update_score(task_id, -1)
     return redirect(url_for("index"))
 
@@ -98,5 +98,5 @@ def delete(task_id):
     remove_task(task_id)
     return redirect(url_for("index"))
 
-init_db()
+initialize_database()
 app.run(debug=True)
