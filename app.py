@@ -9,8 +9,10 @@ def initialize_database():
         conn.execute("""
             CREATE TABLE IF NOT EXISTS tasks (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                created_at INTEGER DEFAULT (strftime('%s','now')),
                 name TEXT NOT NULL,
-                score INTEGER NOT NULL DEFAULT 0
+                upvotes INTEGER NOT NULL DEFAULT 0,
+                downvotes INTEGER NOT NULL DEFAULT 0
             )
         """)
 
@@ -18,14 +20,21 @@ def get_tasks():
     with sqlite3.connect(DB) as conn:
         conn.row_factory = sqlite3.Row
         return conn.execute(
-            "SELECT * FROM tasks ORDER BY score DESC, id ASC"
+            "SELECT * FROM tasks ORDER BY upvotes - downvotes DESC, id ASC"
         ).fetchall()
 
-def update_score(task_id, delta):
+def upvote_task(task_id):
     with sqlite3.connect(DB) as conn:
         conn.execute(
-            "UPDATE tasks SET score = score + ? WHERE id = ?",
-            (delta, task_id)
+            "UPDATE tasks SET upvotes = upvotes + 1 WHERE id = ?",
+            (task_id,)
+        )
+
+def downvote_task(task_id):
+    with sqlite3.connect(DB) as conn:
+        conn.execute(
+            "UPDATE tasks SET downvotes = downvotes + 1 WHERE id = ?",
+            (task_id,)
         )
 
 def add_task(name):
@@ -68,7 +77,7 @@ HTML = """
         <button>-</button>
     </form>
 
-    <strong>{{ task.score }}</strong>
+    <div style="width:192px;display:inline-block;"><strong>{{ task.upvotes - task.downvotes }}</strong> ({{ task.upvotes }} - {{ task.downvotes }})</div>
     {{ task.name }}
 </div>
 {% endfor %}
@@ -85,12 +94,12 @@ def add():
 
 @app.route("/increment/<int:task_id>", methods=["POST"])
 def increment(task_id):
-    update_score(task_id, 1)
+    upvote_task(task_id)
     return redirect(url_for("index"))
 
 @app.route("/decrement/<int:task_id>", methods=["POST"])
 def decrement(task_id):
-    update_score(task_id, -1)
+    downvote_task(task_id)
     return redirect(url_for("index"))
 
 @app.route("/delete/<int:task_id>", methods=["POST"])
