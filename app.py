@@ -35,6 +35,13 @@ def add_task(name):
             (name,)
         )
 
+def remove_task(task_id):
+    with sqlite3.connect(DB) as conn:
+        conn.execute(
+            "DELETE FROM tasks WHERE id = ?",
+            (task_id,)
+        )
+
 HTML = """
 <!doctype html>
 <title>Task Scorer</title>
@@ -49,6 +56,10 @@ HTML = """
 
 {% for task in tasks %}
 <div style="margin-bottom:8px;">
+    <form style="display:inline;" method="post" action="/delete/{{task.id}}">
+        <button style="color:red;">×</button>
+    </form>
+
     <strong>{{ task.score }}</strong>
     {{ task.name }}
 
@@ -80,6 +91,11 @@ def inc(task_id):
 @app.route("/dec/<int:task_id>", methods=["POST"])
 def dec(task_id):
     update_score(task_id, -1)
+    return redirect(url_for("index"))
+
+@app.route("/delete/<int:task_id>", methods=["POST"])
+def delete(task_id):
+    remove_task(task_id)
     return redirect(url_for("index"))
 
 init_db()
