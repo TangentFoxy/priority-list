@@ -80,7 +80,7 @@ def index():
 
 @app.route("/add", methods=["POST"])
 def add():
-    add_task(request.form["name"])
+    add_task(request.form["name"].strip())
     return redirect(url_for("index"))
 
 @app.route("/increment/<int:task_id>", methods=["POST"])
