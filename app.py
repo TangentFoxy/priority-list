@@ -44,8 +44,8 @@ def remove_task(task_id):
 
 HTML = """
 <!doctype html>
-<title>Task Scorer</title>
-<h1>Task List</h1>
+<title>priority-list</title>
+<h1>priority-list</h1>
 
 <form method="post" action="/add">
     <input name="name" placeholder="New task" required>
@@ -60,9 +60,6 @@ HTML = """
         <button style="color:red;">×</button>
     </form>
 
-    <strong>{{ task.score }}</strong>
-    {{ task.name }}
-
     <form style="display:inline;" method="post" action="/inc/{{task.id}}">
         <button>+</button>
     </form>
@@ -70,6 +67,9 @@ HTML = """
     <form style="display:inline;" method="post" action="/dec/{{task.id}}">
         <button>-</button>
     </form>
+
+    <strong>{{ task.score }}</strong>
+    {{ task.name }}
 </div>
 {% endfor %}
 """
