@@ -48,8 +48,8 @@ HTML = """
 <h1>priority-list</h1>
 
 <form method="post" action="/add">
-    <input name="name" placeholder="New task" required>
-    <button type="submit">Add</button>
+    <input name="name" placeholder="new item" required autofocus>
+    <button type="submit">+</button>
 </form>
 
 <hr>
