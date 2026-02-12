@@ -3,7 +3,8 @@ services:
     image: python:3.12-slim
     working_dir: /app
     volumes:
-      - ./volume:/app
+      - ./app.py:/app/app.py
+      - ./db:/app/db
     ports:
       - "5000:5000"
     environment:

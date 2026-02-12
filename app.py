@@ -2,7 +2,7 @@ from flask import Flask, render_template_string, request, redirect, url_for
 import sqlite3
 
 app = Flask(__name__)
-DB = "tasks.db"
+DB = "db/tasks.db"
 
 def init_db():
     with sqlite3.connect(DB) as conn:
