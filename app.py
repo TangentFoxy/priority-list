@@ -82,6 +82,5 @@ def dec(task_id):
     update_score(task_id, -1)
     return redirect(url_for("index"))
 
-if __name__ == "__main__":
-    init_db()
-    app.run(debug=True, user_reloader=False)
+init_db()
+app.run(debug=True)
